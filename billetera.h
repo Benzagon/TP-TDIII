@@ -76,6 +76,15 @@ class Billetera {
 
     /** Puntero a la blockchain asociada */
     Blockchain* const _blockchain;
+
+    /** Saldo actual de la billetera */
+    monto _saldo;
+
+    map<int, vector<id_billetera>> _billeteras_por_cantidad_de_transacciones;
+
+    map<timestamp, monto> _saldo_por_dia;
+    
+    list<Transaccion> _transacciones;
 };
 
 #endif
