@@ -1,5 +1,4 @@
 #include <vector>
-
 #include "lib.h"
 #include "calendario.h"
 #include "billetera.h"
@@ -81,7 +80,7 @@ monto Billetera::saldo() const { // O(1)
 
 monto Billetera::saldo_al_fin_del_dia(timestamp t) const {
   timestamp dia = Calendario::fin_del_dia(t);
-  return _saldo_por_dia.at(dia); // O(log D)    PREGUNTAR PORQUE NO FUNCIONA _saldop_por_dia[dia]
+  return _saldo_por_dia.at(dia); // O(log D)
 }
 
 vector<Transaccion> Billetera::ultimas_transacciones(int k) const { // O(k)
@@ -101,10 +100,10 @@ vector<id_billetera> Billetera::detinatarios_mas_frecuentes(int k) const { // O(
   // los pares de entradas desde la mayor clave hasta la menor.
   vector<id_billetera> ret = {};
   auto it = _billeteras_por_cantidad_de_transacciones.rbegin();
-  while (it != _billeteras_por_cantidad_de_transacciones.rend() && ret.size() < k) {
+  while (it != _billeteras_por_cantidad_de_transacciones.rend() && ret.size() < k) { // O(k/i) donde i = cantidad de personas con la misma frecuencia
     vector<id_billetera> siguiente_grupo = it->second;
     int i = 0;
-    while (i < siguiente_grupo.size() && ret.size() < k) {
+    while (i < siguiente_grupo.size() && ret.size() < k) { // O(i)
       ret.push_back(siguiente_grupo[i]);
       i++;
     }
