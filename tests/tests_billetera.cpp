@@ -164,7 +164,7 @@ TEST_F(test_billetera, si_consulto_saldo_entre_creacion_y_primera_transaccion_re
   EXPECT_EQ(billetera1->saldo_al_fin_del_dia(Calendario::dia(1)), 100);
 }
 
-TEST_F(test_billetera, si_consulto_saldo_después_de_la_ultima_transaccion_devuelve_saldo_actual) {
+TEST_F(test_billetera, si_consulto_saldo_despus_de_la_ultima_transaccion_devuelve_saldo_actual) {
   Blockchain blockchain;
 
   Calendario::fijar(0);
