@@ -8,6 +8,29 @@
 
 using namespace std;
 
+
+/**
+ * INVARIANTE DE REPRESENTACIÓN:
+ * _saldo:
+ *  - Es la suma del monto de todas las transacciones donde Billetera fue destino 
+ *  menos la suma del monto de todas las transacciones donde Billetera fue origen.
+ * 
+ * _billeteras_por_cantidad_de_transacciones:
+ *  - La suma de las claves es la máxima cantidad de veces que Billetera envió dinero.
+ *  - La suma de las longitudes de las valores es la máxima cantidad de destinatarios a los que Billetera envió dinero.
+ *  - Dada cualquier clave del map, para toda billetera del vector en su valor, se cumple que la suma de transacciones
+ *  donde esta fue destino es igual a la clave.
+ *  - La longitud del map es a lo sumo la máxima cantidad de destinatarios totales a los que una billetera envió dinero.
+ * 
+ * _saldo_por_dia:
+ *  - Las claves del map son finales de días.
+ *  - La cantidad de claves en el map es la cantidad de días entre que se abrió Billetera y su última transacción.
+ *  - Para cada clave, el valor es la suma del monto de todas las transacciones donde Billetera fue destino 
+ *  menos la suma del monto de todas las transacciones donde Billetera fue origen hasta el día de la clave.
+ * 
+ * _transacciones:
+ *  - Listado de todas las transacciones realizadas que involucran a la billetera.
+ */
 class Billetera {
   public:
     /**
@@ -80,7 +103,7 @@ class Billetera {
     /** Saldo actual de la billetera */
     monto _saldo;
 
-     /** Mapa de cantidad de interacciones y billeteras asociadas */
+     /** Mapa de cantidad de interacciones y billeteras asociadas destinatarias */
     map<int, vector<id_billetera>> _billeteras_por_cantidad_de_transacciones;
 
     /** Saldos por dia */

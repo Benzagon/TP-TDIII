@@ -108,7 +108,7 @@ vector<id_billetera> Billetera::detinatarios_mas_frecuentes(int k) const { // O(
   // los pares de entradas desde la mayor clave hasta la menor.
   vector<id_billetera> ret = {};
   auto it = _billeteras_por_cantidad_de_transacciones.rbegin();
-  while (it != _billeteras_por_cantidad_de_transacciones.rend() && ret.size() < k) { // O(k/i) donde i = cantidad de personas con la misma frecuencia
+  while (it != _billeteras_por_cantidad_de_transacciones.rend() && ret.size() < k) { // O(k/i) donde i = it->second.size()
     vector<id_billetera> siguiente_grupo = it->second;
     int i = 0;
     while (i < siguiente_grupo.size() && ret.size() < k) { // O(i)
