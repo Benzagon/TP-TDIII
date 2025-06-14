@@ -79,7 +79,15 @@ monto Billetera::saldo() const { // O(1)
 }
 
 monto Billetera::saldo_al_fin_del_dia(timestamp t) const {
-  timestamp dia = Calendario::fin_del_dia(t);
+  timestamp dia = Calendario::fin_del_dia(t); // O(1)
+  
+  // Nos fijamos si el dia pedido es "en el futuro"
+  auto it = _saldo_por_dia.rbegin();   // O(1)
+  timestamp ultimo_dia_guardado = it->first; // O(1)
+  if(ultimo_dia_guardado < dia) { // O(1)
+    return _saldo; // O(1)
+  }
+  
   return _saldo_por_dia.at(dia); // O(log D)
 }
 
