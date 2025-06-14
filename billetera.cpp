@@ -18,17 +18,17 @@ id_billetera Billetera::id() const {
 
 void Billetera::notificar_transaccion(Transaccion t) { // O(C)
   _transacciones.push_back(t);
-  id_billetera amigo;
+  id_billetera billetera_amigo;
   if(t.origen == _id) {
     _saldo -= t.monto;
-    amigo = t.destino;
+    billetera_amigo = t.destino;
   }
   else if (t.destino == _id) {
     _saldo += t.monto;
-    amigo = t.origen;
+    billetera_amigo = t.origen;
   }
 
-  if (amigo == 0) {
+  if (billetera_amigo == 0) { // Si es la trx semilla.
     const timestamp fin_del_dia = Calendario::fin_del_dia(t._timestamp);
     _saldo_por_dia[fin_del_dia] = _saldo; // O(1) (esta vacio) 
   }
@@ -45,22 +45,22 @@ void Billetera::notificar_transaccion(Transaccion t) { // O(C)
     _saldo_por_dia[fin_del_dia] = _saldo; // O(log(D))
   }
   
-  if(amigo != 0 && t.destino == amigo) { // Si no es a la semilla    
+  if(billetera_amigo != 0 && t.destino == billetera_amigo) { // Si no es a la semilla    
     auto it = _billeteras_por_cantidad_de_transacciones.begin();  
     bool encontrado = false;
     while (it != _billeteras_por_cantidad_de_transacciones.end() && !encontrado) { // O(C/X)
       for (int i = 0; i < it->second.size() && !encontrado; i++) { // O(X)
-        if (amigo == it->second[i]) {
+        if (billetera_amigo == it->second[i]) {
           // BORRAR AL AMIGO
           it->second[i] = it->second[it->second.size() - 1]; // O(1)
           it->second.pop_back(); // O(1)
           // AGREGAR AMIGO AL SIGUIENTE
           auto it2 = ++it;
           if(it2 != _billeteras_por_cantidad_de_transacciones.end()) {
-            it2->second.push_back(amigo); // O(1)
+            it2->second.push_back(billetera_amigo); // O(1)
           }
           else {
-            _billeteras_por_cantidad_de_transacciones[it->first + 1].push_back(amigo); // O(log n)
+            _billeteras_por_cantidad_de_transacciones[it->first + 1].push_back(billetera_amigo); // O(log n)
           }
           encontrado = true;
         }
@@ -69,7 +69,7 @@ void Billetera::notificar_transaccion(Transaccion t) { // O(C)
     }
 
     if(!encontrado) {
-      _billeteras_por_cantidad_de_transacciones[1].push_back(amigo); // O(1)
+      _billeteras_por_cantidad_de_transacciones[1].push_back(billetera_amigo); // O(1)
     }
   }
 }
