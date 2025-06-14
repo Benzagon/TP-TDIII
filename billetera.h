@@ -80,10 +80,13 @@ class Billetera {
     /** Saldo actual de la billetera */
     monto _saldo;
 
+     /** Mapa de cantidad de interacciones y billeteras asociadas */
     map<int, vector<id_billetera>> _billeteras_por_cantidad_de_transacciones;
 
+    /** Saldos por dia */
     map<timestamp, monto> _saldo_por_dia;
     
+    /** Listado de todas las transacciones realizadas que involucran a la billetera*/
     list<Transaccion> _transacciones;
 };
 
