@@ -111,6 +111,17 @@ class Billetera {
     
     /** Listado de todas las transacciones realizadas que involucran a la billetera*/
     list<Transaccion> _transacciones;
+
+    /** Métodos auxiliares */
+    id_billetera _conseguir_billetera_amigo(Transaccion t);
+    
+    void _actualizar_saldo(Transaccion t);
+
+    void _actualizar_saldo_por_dia(Transaccion t);
+
+    void _actualizar_billeteras_por_cantidad_de_transacciones(Transaccion t);
+
+    void _actualizar_cantidad_transacciones_billetera_amigo(map<int, vector<id_billetera>>::iterator it, id_billetera billetera_amigo, int i);
 };
 
 #endif
