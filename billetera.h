@@ -103,7 +103,7 @@ class Billetera {
     /** Saldo actual de la billetera */
     monto _saldo;
 
-     /** Mapa de cantidad de interacciones y billeteras asociadas destinatarias */
+    /** Mapa de cantidad de interacciones y billeteras asociadas destinatarias */
     map<int, vector<id_billetera>> _billeteras_por_cantidad_de_transacciones;
 
     /** Saldos por dia */
@@ -113,7 +113,7 @@ class Billetera {
     list<Transaccion> _transacciones;
 
     /** Métodos auxiliares */
-    
+
     id_billetera _conseguir_billetera_amigo(Transaccion t);
     
     void _actualizar_saldo(Transaccion t);
