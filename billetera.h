@@ -113,6 +113,7 @@ class Billetera {
     list<Transaccion> _transacciones;
 
     /** Métodos auxiliares */
+    
     id_billetera _conseguir_billetera_amigo(Transaccion t);
     
     void _actualizar_saldo(Transaccion t);
