@@ -24,6 +24,7 @@ using namespace std;
  * _saldo_por_dia:
  *  - Las claves del map son finales de días.
  *  - La cantidad de claves en el map es la cantidad de días entre que se abrió Billetera y su última transacción.
+ *  - Los valores son todos los días entre la semilla y la última trx.
  *  - Para cada clave, el valor es la suma del monto de todas las transacciones donde Billetera fue destino 
  *  menos la suma del monto de todas las transacciones donde Billetera fue origen hasta el día de la clave.
  * 
