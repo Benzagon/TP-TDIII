@@ -21,7 +21,7 @@ using namespace std;
  *  - Dada cualquier clave del map, para toda billetera del vector en su valor, se cumple que la suma de transacciones
  *    donde esta fue destino es igual a la clave.
  *  - La longitud del map es a lo sumo la máxima cantidad de destinatarios totales a los que una billetera envió dinero.
- *  - No hay destinatarios repetidos entre los niveles.
+ *  - No hay destinatarios repetidos.
  * 
  * _saldo_por_dia:
  *  - Las claves del map son finales de días.
