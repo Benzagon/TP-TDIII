@@ -17,10 +17,11 @@ using namespace std;
  * 
  * _billeteras_por_cantidad_de_transacciones:
  *  - La suma de: las claves * la longitud de su valor, es la cantidad de veces que Billetera envió dinero.
- *  - La suma de las longitudes de los valores es la máxima cantidad de destinatarios a los que Billetera envió dinero.
+ *  - La suma de las longitudes de los valores es la cantidad de destinatarios a los que Billetera envió dinero.
  *  - Dada cualquier clave del map, para toda billetera del vector en su valor, se cumple que la suma de transacciones
  *    donde esta fue destino es igual a la clave.
  *  - La longitud del map es a lo sumo la máxima cantidad de destinatarios totales a los que una billetera envió dinero.
+ *  - No hay destinatarios repetidos entre los niveles.
  * 
  * _saldo_por_dia:
  *  - Las claves del map son finales de días.
