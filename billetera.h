@@ -30,6 +30,7 @@ using namespace std;
  * 
  * _transacciones:
  *  - Listado de todas las transacciones realizadas que involucran a la billetera.
+ *  - Ordenadas en orden de llegada
  */
 class Billetera {
   public:
