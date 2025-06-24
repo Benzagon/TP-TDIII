@@ -170,7 +170,6 @@ void Billetera::_actualizar_billeteras_por_cantidad_de_transacciones(Transaccion
   id_billetera billetera_amigo = _conseguir_billetera_amigo(t); // O(1)
 
   bool encontrado = false; // O(1)
-  int pos_encontrada; // O(1)
   auto it = _billeteras_por_cantidad_de_transacciones.begin();  // O(1)
 
   // Complejidad total del ciclo: O(C)
@@ -181,7 +180,7 @@ void Billetera::_actualizar_billeteras_por_cantidad_de_transacciones(Transaccion
   while (it != _billeteras_por_cantidad_de_transacciones.end() && !encontrado) { // O(C) (Justificado arriba)
     for (int i = 0; i < it->second.size() && !encontrado; i++) { // O(...) (Justificado arriba)
       if (billetera_amigo == it->second[i]) { // O(1)
-        pos_encontrada = i; // O(1)
+        _actualizar_cantidad_transacciones_billetera_amigo(it, billetera_amigo, i); // O(log C)
         encontrado = true; // O(1)
       }
     }
@@ -189,7 +188,6 @@ void Billetera::_actualizar_billeteras_por_cantidad_de_transacciones(Transaccion
   }
 
   if(encontrado) { // O(1)
-    _actualizar_cantidad_transacciones_billetera_amigo(it, billetera_amigo, pos_encontrada); // O(log C)
     return; // O(1)
   }
   // Si no lo encontré, lo guardo con su frecuencia en 1.
