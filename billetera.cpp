@@ -17,16 +17,20 @@ id_billetera Billetera::id() const {
 }
 
 
-void Billetera::notificar_transaccion(Transaccion t) { // O(C)
-  _transacciones.push_back(t);
+void Billetera::notificar_transaccion(Transaccion t) {
+  _transacciones.push_back(t); // O(1)
 
-  _actualizar_saldo(t);
-  _actualizar_saldo_por_dia(t);
+  _actualizar_saldo(t); // O(1)
+  _actualizar_saldo_por_dia(t); // O(D log(D))
 
-  id_billetera billetera_amigo = _conseguir_billetera_amigo(t);
-  if(billetera_amigo != 0 && t.destino == billetera_amigo) { // Si no es a la semilla y envié dinero
-    _actualizar_billeteras_por_cantidad_de_transacciones(t);
+  id_billetera billetera_amigo = _conseguir_billetera_amigo(t); // O(1)
+  if(billetera_amigo != 0 && t.destino == billetera_amigo) { // Si no es a la semilla y envié dinero (O(1))
+    _actualizar_billeteras_por_cantidad_de_transacciones(t); // O(C)
   }
+
+  // COMPLEJIDAD TOTAL DEL MÉTODO: O(D*log D + C)
+  //   - 3 operaciones O(1) + O(D log D) + O(C)
+  //   - 3*O(1) + O(D log D) + O(C) = O(1) + O(D log D) + O(C) = O(D*log D + C)
 }
 
 monto Billetera::saldo() const {
@@ -79,15 +83,17 @@ vector<id_billetera> Billetera::detinatarios_mas_frecuentes(int k) const { // O(
   vector<id_billetera> ret = {};  // O(1)
   auto it = _billeteras_por_cantidad_de_transacciones.rbegin(); // O(1)
 
-  // PREGUNTAR MAÑANA A JUAN ¿O(k/min(i,k))?
-  while (it != _billeteras_por_cantidad_de_transacciones.rend() && ret.size() < k) { // O(k/i) donde i = it->second.size() en cada ciclo. En el peor caso, i = C.
+  // Complejidad total del ciclo: O(k)
+  //  - A pesar de tener dos ciclos, solo se iterará k veces. Esto es debido a que
+  //    a pesar de tener muchos vectores, voy a agarrar k elementos en total (cada iteración guardo un k en ret).
+  //    Pasar de un vector a otro es O(1). Podemos pensarlo como recorrer una lista enlazada.
+  //    Ambos ciclos cortan cuando ret.size() >= k. En cada iteración, el while "interno" modifica ret.
+  //  - El resto de las operaciones son O(1)
+  while (it != _billeteras_por_cantidad_de_transacciones.rend() && ret.size() < k) { // O(k) (justificado arriba)
     vector<id_billetera> siguiente_grupo = it->second; // O(1)
     int i = 0; // O(1)
 
-    // Complejidad total del ciclo: O(min(i,k))
-    //   - O(min(i,k)) iteraciones
-    //   - O(1) operaciones en cada iteración
-    while (i < siguiente_grupo.size() && ret.size() < k) { // O(min(i,k))
+    while (i < siguiente_grupo.size() && ret.size() < k) { // O(...) (justificado arriba)
       ret.push_back(siguiente_grupo[i]); // O(1)
       i++; // O(1)
     }
@@ -106,20 +112,28 @@ vector<id_billetera> Billetera::detinatarios_mas_frecuentes(int k) const { // O(
 /** Métodos privados auxiliares */
 
 id_billetera Billetera::_conseguir_billetera_amigo(Transaccion t) {
-  if(t.origen == _id) {
-    return t.destino;
+  if(t.origen == _id) { // O(1)
+    return t.destino; // O(1)
   }
-  return t.origen;
+  return t.origen; // O(1)
+
+  // COMPLEJIDAD TOTAL DEL MÉTODO: O(1)
+  //   - 2 operaciones O(1)
+  //   - 2*O(1) = O(1)
 }
 
 void Billetera::_actualizar_saldo(Transaccion t) {
   // Si envié dinero
-  if(t.origen == _id) {
-    _saldo -= t.monto;
-    return;
+  if(t.origen == _id) { // O(1)
+    _saldo -= t.monto; // O(1)
+    return; // O(1)
   }
   // Si recibí
-  _saldo += t.monto;
+  _saldo += t.monto; // O(1)
+
+  // COMPLEJIDAD TOTAL DEL MÉTODO: O(1)
+  //   - En el peor caso 3 operaciones O(1)
+  //   - 3*O(1) = O(1)
 }
 
 void Billetera::_actualizar_saldo_por_dia(Transaccion t) {
@@ -153,38 +167,50 @@ void Billetera::_actualizar_saldo_por_dia(Transaccion t) {
 }
 
 void Billetera::_actualizar_billeteras_por_cantidad_de_transacciones(Transaccion t) {
-  id_billetera billetera_amigo = _conseguir_billetera_amigo(t);
+  id_billetera billetera_amigo = _conseguir_billetera_amigo(t); // O(1)
 
-  bool encontrado = false;
-  auto it = _billeteras_por_cantidad_de_transacciones.begin();  
+  bool encontrado = false; // O(1)
+  int pos_encontrada; // O(1)
+  auto it = _billeteras_por_cantidad_de_transacciones.begin();  // O(1)
 
-  while (it != _billeteras_por_cantidad_de_transacciones.end() && !encontrado) { // O(C/X)
-    for (int i = 0; i < it->second.size() && !encontrado; i++) { // O(X)
-      if (billetera_amigo == it->second[i]) {
-        _actualizar_cantidad_transacciones_billetera_amigo(it, billetera_amigo, i);
-        encontrado = true;
+  // Complejidad total del ciclo: O(C)
+  //  - En total hay C billeteras para recorrer. En el peor de los casos, se deberán recorrer todas.
+  //    Las C billeteras están agrupadas en los sub vectores del mapa. Pasar a los distintos vectores es O(1) pués se realiza con
+  //    un iterador.
+  //  - El resto de las operaciones son O(1)
+  while (it != _billeteras_por_cantidad_de_transacciones.end() && !encontrado) { // O(C) (Justificado arriba)
+    for (int i = 0; i < it->second.size() && !encontrado; i++) { // O(...) (Justificado arriba)
+      if (billetera_amigo == it->second[i]) { // O(1)
+        pos_encontrada = i; // O(1)
+        encontrado = true; // O(1)
       }
     }
-    ++it;
+    ++it; // O(1)
   }
 
-  if(!encontrado) {
-    _billeteras_por_cantidad_de_transacciones[1].push_back(billetera_amigo); // O(1)
+  if(encontrado) { // O(1)
+    _actualizar_cantidad_transacciones_billetera_amigo(it, billetera_amigo, pos_encontrada); // O(log C)
+    return; // O(1)
   }
+  // Si no lo encontré, lo guardo con su frecuencia en 1.
+  _billeteras_por_cantidad_de_transacciones[1].push_back(billetera_amigo); // O(log C)
+  
+  // COMPLEJIDAD TOTAL DEL MÉTODO: O(C)
+  //   - 6 operaciones O(1) + O(log C) + O(C)
+  //   - 6*O(1) + O(log C) + O(C) = O(1) + O(log C) + O(C) = max{O(1), O(log C), O(C)} = O(C)
 }
 
 void Billetera::_actualizar_cantidad_transacciones_billetera_amigo(map<int, vector<id_billetera>>::iterator it, id_billetera billetera_amigo, int i) {
-  // BORRAR AL AMIGO
+  // Borrar la billetera de su frecuencia.
   it->second[i] = it->second[it->second.size() - 1]; // O(1)
   it->second.pop_back(); // O(1)
   
-  // AGREGAR AMIGO AL SIGUIENTE
-  auto it2 = ++it;
-  if(it2 != _billeteras_por_cantidad_de_transacciones.end()) {
-    it2->second.push_back(billetera_amigo); // O(1)
-    return;
-  }
-  _billeteras_por_cantidad_de_transacciones[it->first + 1].push_back(billetera_amigo); // O(log n)
+  // Agregar a frecuencia siguiente
+  _billeteras_por_cantidad_de_transacciones[it->first + 1].push_back(billetera_amigo); // O(log C)
+
+  // COMPLEJIDAD TOTAL DEL MÉTODO: O(log C)
+  //   - 3 operaciones O(1) + O(log C)
+  //   - 3*O(1) + O(log C) = O(1) + O(log C) = O(log C)
 }
 
 //////////////////////////////////
