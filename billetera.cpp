@@ -176,11 +176,12 @@ void Billetera::_actualizar_billeteras_por_cantidad_de_transacciones(Transaccion
   //  - En total hay C billeteras para recorrer. En el peor de los casos, se deberán recorrer todas.
   //    Las C billeteras están agrupadas en los sub vectores del mapa. Pasar a los distintos vectores es O(1) pués se realiza con
   //    un iterador.
+  //  - El if tiene una operación O(log C) que se ejecuta una vez. Entonces sería O(max{O(C), O(log C)} = O(C))
   //  - El resto de las operaciones son O(1)
   while (it != _billeteras_por_cantidad_de_transacciones.end() && !encontrado) { // O(C) (Justificado arriba)
     for (int i = 0; i < it->second.size() && !encontrado; i++) { // O(...) (Justificado arriba)
       if (billetera_amigo == it->second[i]) { // O(1)
-        _actualizar_cantidad_transacciones_billetera_amigo(it, billetera_amigo, i); // O(log C)
+        _actualizar_cantidad_transacciones_billetera_amigo(it, billetera_amigo, i); // O(log C) ESTE SE EJECUTA UNA SOLA VEZ, PORQUE encontrado CAMBIA A SER TRUE
         encontrado = true; // O(1)
       }
     }
